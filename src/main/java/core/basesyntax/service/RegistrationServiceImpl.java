@@ -8,6 +8,9 @@ import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
     private final StorageDao storageDao = new StorageDaoImpl();
+    private static final int MIN_AGE = 18;
+    private static final int MIN_LOGIN_LENGTH = 6;
+    private static final int MIN_PASSWORD_LENGTH = 6;
 
     @Override
     public User register(User user) {
@@ -16,7 +19,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         for (User users : Storage.people) {
-            if (users.equals(user)) {
+            if (users.getLogin().equals(user.getLogin())) {
                 throw new RegistrationException("this Login already register");
             }
         }
@@ -25,7 +28,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RegistrationException("login is null");
         }
 
-        if (user.getLogin().length() <= 5) {
+        if (user.getLogin().length() < MIN_LOGIN_LENGTH) {
             throw new RegistrationException("this Login too short");
         }
 
@@ -33,7 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RegistrationException("password is null");
         }
 
-        if (user.getPassword().length() <= 5) {
+        if (user.getPassword().length() < MIN_PASSWORD_LENGTH) {
             throw new RegistrationException("this Password too short");
         }
 
@@ -41,7 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new RegistrationException("age cant be zero or negative");
         }
 
-        if (user.getAge() < 18) {
+        if (user.getAge() < MIN_AGE) {
             throw new RegistrationException("you need be at least 18 years old to register");
         }
 
